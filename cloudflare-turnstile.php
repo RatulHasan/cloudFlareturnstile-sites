@@ -38,7 +38,6 @@ add_action( 'wp_head', function () {
 
 /*
  * Adding Cloudflare Turnstile to Login Form by wpcookie
- * https://redpishi.com/wordpress-tutorials/cloudflare-turnstile-captcha-wordpress/
  */
 function login_style() {
     wp_register_script( 'login-recaptcha', 'https://challenges.cloudflare.com/turnstile/v0/api.js', false, null );
@@ -92,7 +91,6 @@ add_action( 'wp_authenticate_user', function ( $user, $password ) {
 
 /*
  * Adding Cloudflare Turnstile to WordPress Comment
- * https://redpishi.com/wordpress-tutorials/cloudflare-turnstile-captcha-wordpress/
  */
 function is_valid_captcha( $captcha ) {
 
