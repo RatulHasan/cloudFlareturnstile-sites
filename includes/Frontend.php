@@ -54,7 +54,7 @@ class Frontend {
         if ( get_option( 'cloudflare_turnstile_enable', false ) && get_option( 'cloudflare_turnstile_comment_enable', false ) ) {
             $captcha = isset( $_POST['cf-turnstile-response'] ) ? sanitize_text_field( $_POST['cf-turnstile-response'] ) : '';
             if ( ! Utils::isValidCaptcha( $captcha ) ) {
-                wp_die( __( 'Captcha Invalid', 'turnstile-for-cloudflare' ) );
+                wp_die( esc_html__( 'Captcha Invalid', 'turnstile-for-cloudflare' ) );
             }
         }
     }
