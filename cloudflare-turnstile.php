@@ -214,29 +214,33 @@ function getResponse_keys( $captcha ) {
 add_action( 'init', function () {
     $enable = get_option( 'cloudflare_turnstile_enable', false);
 	$enableComment = get_option( 'cloudflare_turnstile_comment_enable', false);
-    if ( ! $enable || ! $enableComment ) {
-        return;
-	}
-
-    if ( ! is_user_logged_in() ) {
-        add_action( 'pre_comment_on_post', function () {
-			if ( ! isset( $_POST['cf-turnstile-response'] )){
-				wp_die( __( "<b>ERROR:</b> please select <b>I'm not a robot!</b><p><a href='javascript:history.back()'>« Back</a></p>", 'cloudflare-turnstile' ) );
-            }
-
-            $recaptcha = $_POST['cf-turnstile-response'];
-            if ( empty( $recaptcha ) ) {
-                wp_die( __( "<b>ERROR:</b> please select <b>I'm not a robot!</b><p><a href='javascript:history.back()'>« Back</a></p>", 'cloudflare-turnstile' ) );
-            } elseif ( ! is_valid_captcha( $recaptcha ) ) {
-                wp_die( __( "<b>please select I'm not a robot!</b>", 'cloudflare-turnstile' ) );
-            }
-        } );
-
-        add_filter( 'comment_form_defaults', function ( $submit_field ) {
-
-            $submit_field['submit_field'] = '<div class="cf-turnstile" data-sitekey="' . cloudflare_key()[0] . '"></div><br>' . $submit_field['submit_field'];
-
-            return $submit_field;
-        } );
+    if ( ! $enable || ! $enableComment || is_user_logged_in() ) {
+		return;
     }
+
+	// Enqueue the Turnstile script
+    add_action( 'wp_enqueue_scripts', function() {
+        wp_enqueue_script( 'cloudflare-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', [], null, true );
+    });
+
+    // Add the Turnstile widget to the comment form
+    add_filter( 'comment_form_defaults', function ( $defaults ) {
+        $sitekey = cloudflare_key()[0]; // Adjust this if necessary
+        $defaults['comment_notes_after'] .= '<div class="cf-turnstile" data-sitekey="' . esc_attr( $sitekey ) . '"></div>';
+        return $defaults;
+    });
+
+    // Verify the Turnstile response on comment submission
+    add_action( 'pre_comment_on_post', function () {
+        if ( ! isset( $_POST['cf-turnstile-response'] ) ) {
+            wp_die( __( "<b>ERROR:</b> please select <b>I'm not a robot!</b><p><a href='javascript:history.back()'>« Back</a></p>", 'cloudflare-turnstile' ) );
+        }
+
+        $recaptcha = sanitize_text_field( $_POST['cf-turnstile-response'] );
+        if ( empty( $recaptcha ) ) {
+            wp_die( __( "<b>ERROR:</b> please select <b>I'm not a robot!</b><p><a href='javascript:history.back()'>« Back</a></p>", 'cloudflare-turnstile' ) );
+        } elseif ( ! is_valid_captcha( $recaptcha ) ) {
+            wp_die( __( "<b>please select I'm not a robot!</b>", 'cloudflare-turnstile' ) );
+        }
+    });
 } );
