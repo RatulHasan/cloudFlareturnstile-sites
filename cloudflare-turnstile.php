@@ -25,13 +25,81 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Define the plugin version.
 define( 'CFTS_VERSION', '1.0.0' );
 function cloudflare_key() {
-    $sitekey   = '0x4AAAAAAAbVop3pyZX0TV-M';
-    $secretkey = '0x4AAAAAAAbVohfYIG2ycy0tq_N_6Nd6v8U';
-
-    return [ $sitekey, $secretkey ];
+    return [ get_option( 'cloudflare_site_key', '' ), get_option( 'cloudflare_secret_key', '' ) ];
 }
 
+// Add settings link on plugin page
+function cloudflare_turnstile_settings_link( $links ) {
+    $settings_link = '<a href="options-general.php?page=cloudflare-turnstile">Settings</a>';
+    array_unshift( $links, $settings_link );
+
+    return $links;
+}
+
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'cloudflare_turnstile_settings_link' );
+
+// Add menu in admin panel
+add_action( 'admin_menu', function () {
+    add_options_page( 'Cloudflare Turnstile', 'Cloudflare Turnstile', 'manage_options', 'cloudflare-turnstile', 'cloudflare_turnstile_page' );
+} );
+
+// Register settings
+function cloudflare_turnstile_register_settings() {
+	register_setting( 'cloudflare_turnstile', 'cloudflare_turnstile_enable' );
+    register_setting( 'cloudflare_turnstile', 'cloudflare_site_key' );
+    register_setting( 'cloudflare_turnstile', 'cloudflare_secret_key' );
+}
+
+add_action( 'admin_init', 'cloudflare_turnstile_register_settings' );
+
+function cloudflare_turnstile_page() {
+    ?>
+    <div class="wrap">
+        <h2>Cloudflare Turnstile</h2>
+        <small>
+            Enter your Cloudflare Site Key and Secret Key to enable Cloudflare Turnstile.
+            Or create one from <a href="https://dash.cloudflare.com/sign-up?to=/:account/turnstile" target="_blank">Cloudflare</a>
+        </small>
+        <form method="post" action="options.php">
+            <?php
+            settings_fields( 'cloudflare_turnstile' );
+            do_settings_sections( 'cloudflare_turnstile' );
+            // Create site key and secret key input field to save in database
+            $sitekey   = get_option( 'cloudflare_site_key' );
+            $secretkey = get_option( 'cloudflare_secret_key' );
+
+            ?>
+            <table class="form-table form-table-wide">
+                <tr>
+                    <th scope="row"><label for="cloudflare_turnstile_enable">Enable Cloudflare Turnstile</label></th>
+	                <td>
+		                <input type="checkbox" id="cloudflare_turnstile_enable" name="cloudflare_turnstile_enable" value="1" <?php checked( 1, get_option( 'cloudflare_turnstile_enable' ), true ); ?>>
+	                </td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="cloudflare_site_key">Site Key</label></th>
+                    <td><input type="text" id="cloudflare_site_key" name="cloudflare_site_key" value="<?php echo $sitekey; ?>" class="regular-text"></td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="cloudflare_secret_key">Secret Key</label></th>
+                    <td><input type="text" id="cloudflare_secret_key" name="cloudflare_secret_key" value="<?php echo $secretkey; ?>" class="regular-text"></td>
+                </tr>
+            </table>
+            <?php
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
+}
+
+
 add_action( 'wp_head', function () {
+	$enable = get_option( 'cloudflare_turnstile_enable', false);
+	if ( ! $enable ) {
+		return;
+    }
+
     wp_enqueue_script( 'cloudflare-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js' );
 } );
 
@@ -40,6 +108,10 @@ add_action( 'wp_head', function () {
  * Adding Cloudflare Turnstile to Login Form by wpcookie
  */
 function login_style() {
+    $enable = get_option( 'cloudflare_turnstile_enable', false);
+    if ( ! $enable ) {
+        return;
+    }
     wp_register_script( 'login-recaptcha', 'https://challenges.cloudflare.com/turnstile/v0/api.js', false, null );
     wp_enqueue_script( 'login-recaptcha' );
     echo '<style>p.submit, p.forgetmenot {margin-top: 10px!important;}.login form{width: 303px;} div#login_error {width: 322px;}</style>';
@@ -48,10 +120,19 @@ function login_style() {
 add_action( 'login_enqueue_scripts', 'login_style' );
 
 add_action( 'login_form', function () {
+    $enable = get_option( 'cloudflare_turnstile_enable', false);
+    if ( ! $enable ) {
+        return;
+    }
+
     echo '<div class="cf-turnstile" data-sitekey="' . cloudflare_key()[0] . '"></div>';
 } );
 
 add_action( 'wp_authenticate_user', function ( $user, $password ) {
+    $enable = get_option( 'cloudflare_turnstile_enable', false);
+    if ( ! $enable ) {
+        return $user;
+    }
     $captcha = $_POST['cf-turnstile-response'];
     if ( ! $captcha ) {
         return new WP_Error( 'Captcha Invalid', __( '<center>Captcha Invalid! Please check the captcha!</center>' ) );
@@ -126,6 +207,11 @@ function is_valid_captcha( $captcha ) {
 }
 
 add_action( 'init', function () {
+    $enable = get_option( 'cloudflare_turnstile_enable', false);
+    if ( ! $enable ) {
+        return;
+	}
+
     if ( ! is_user_logged_in() ) {
         add_action( 'pre_comment_on_post', function () {
             $recaptcha = $_POST['cf-turnstile-response'];
