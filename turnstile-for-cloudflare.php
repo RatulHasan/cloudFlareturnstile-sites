@@ -36,7 +36,6 @@ function turnstile_for_cloudflare_init() {
     RatulHasan\TurnstileForCloudflare\Frontend::init();
 }
 
-// After activation redirect to settings page
 function cloudflare_turnstile_redirect() {
     add_option( 'cloudflare_turnstile_redirect', true );
     add_option( 'cloudflare_turnstile_version', CFTS_VERSION );
@@ -44,10 +43,11 @@ function cloudflare_turnstile_redirect() {
 
 register_activation_hook( __FILE__, 'cloudflare_turnstile_redirect' );
 
+// After activation redirect to settings page
 add_action( 'admin_init', function () {
     if ( get_option( 'cloudflare_turnstile_redirect', false ) ) {
         delete_option( 'cloudflare_turnstile_redirect' );
-        wp_redirect( admin_url( 'options-general.php?page=turnstile-for-cloudflare' ) );
+        wp_safe_redirect( admin_url( 'options-general.php?page=turnstile-for-cloudflare' ) );
     }
 } );
 
