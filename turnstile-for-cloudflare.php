@@ -41,22 +41,22 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'cloudflare_tu
 
 // After activation redirect to settings page
 function cloudflare_turnstile_redirect() {
-	add_option( 'cloudflare_turnstile_redirect', true );
-	add_option( 'cloudflare_turnstile_version', CFTS_VERSION );
+    add_option( 'cloudflare_turnstile_redirect', true );
+    add_option( 'cloudflare_turnstile_version', CFTS_VERSION );
 }
 
 register_activation_hook( __FILE__, 'cloudflare_turnstile_redirect' );
 
 add_action( 'admin_init', function () {
-	if ( get_option( 'cloudflare_turnstile_redirect', false ) ) {
-		delete_option( 'cloudflare_turnstile_redirect' );
-		wp_redirect( admin_url( 'options-general.php?page=turnstile-for-cloudflare' ) );
-	}
+    if ( get_option( 'cloudflare_turnstile_redirect', false ) ) {
+        delete_option( 'cloudflare_turnstile_redirect' );
+        wp_redirect( admin_url( 'options-general.php?page=turnstile-for-cloudflare' ) );
+    }
 } );
 
 // Add language support
 function cloudflare_turnstile_load_textdomain() {
-	load_plugin_textdomain( 'turnstile-for-cloudflare', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+    load_plugin_textdomain( 'turnstile-for-cloudflare', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
 
 add_action( 'init', 'cloudflare_turnstile_load_textdomain' );
@@ -73,6 +73,8 @@ function cloudflare_turnstile_register_settings() {
     register_setting( 'cloudflare_turnstile', 'cloudflare_secret_key' );
     register_setting( 'cloudflare_turnstile', 'cloudflare_turnstile_login_enable' );
     register_setting( 'cloudflare_turnstile', 'cloudflare_turnstile_comment_enable' );
+    register_setting( 'cloudflare_turnstile', 'cloudflare_turnstile_register_enable' );
+    register_setting( 'cloudflare_turnstile', 'cloudflare_turnstile_lostpassword_enable' );
 }
 
 add_action( 'admin_init', 'cloudflare_turnstile_register_settings' );
@@ -153,6 +155,36 @@ function cloudflare_turnstile_page() {
 		                    value="1" <?php
                         checked( 1, get_option( 'cloudflare_turnstile_comment_enable' ), true ); ?>></td>
                 </tr>
+		        <tr>
+					<th scope="row"><label for="cloudflare_turnstile_register_enable"><?php
+                            esc_html_e( 'Enable in Register Form', 'turnstile-for-cloudflare' ); ?></label></th>
+					<td>
+						<input
+							type="checkbox"
+							id="cloudflare_turnstile_register_enable"
+							name="cloudflare_turnstile_register_enable"
+							value="1" <?php
+                        checked( 1, get_option( 'cloudflare_turnstile_register_enable' ), true ); ?>>
+					</td>
+		        </tr>
+		        <tr>
+					<th scope="row">
+						<label for="cloudflare_turnstile_lostpassword_enable">
+							<?php
+                            esc_html_e( 'Enable in Lost Password Form', 'turnstile-for-cloudflare' );
+                            ?>
+						</label>
+					</th>
+					<td>
+						<input
+							type="checkbox"
+							id="cloudflare_turnstile_lostpassword_enable"
+							name="cloudflare_turnstile_lostpassword_enable"
+							value="1" <?php
+						checked( 1, get_option( 'cloudflare_turnstile_lostpassword_enable' ), true ); ?>>
+					</td>
+		        </tr>
+
             </table>
             <?php
             submit_button(); ?>
@@ -308,5 +340,73 @@ add_action( 'init', function () {
             ) );
         }
     } );
+} );
+
+// Adding Cloudflare Turnstile to WordPress Lost Password Form
+add_action( 'init', function () {
+    $enable = get_option( 'cloudflare_turnstile_enable', false );
+	$enableLostPassword = get_option( 'cloudflare_turnstile_lostpassword_enable', false );
+    if ( ! $enable || ! $enableLostPassword ) {
+        return;
+    }
+
+    // Enqueue the Turnstile script on the Lost Password page
+    add_action( 'login_enqueue_scripts', function () {
+        if ( 'lostpassword' === $GLOBALS['pagenow'] ) {
+            wp_enqueue_script( 'turnstile-for-cloudflare', 'https://challenges.cloudflare.com/turnstile/v0/api.js', [], CFTS_VERSION, true );
+        }
+    } );
+
+    // Add the Turnstile widget to the Lost Password form
+    add_action( 'lostpassword_form', function () {
+        echo '<div class="cf-turnstile" data-sitekey="' . esc_attr( cloudflare_key()[0] ) . '"></div>';
+    } );
+
+    // Verify the Turnstile response when the Lost Password form is submitted
+    add_action( 'lostpassword_post', function () {
+        if ( ! isset( $_POST['cf-turnstile-response'] ) ) {
+            wp_die( esc_html__( 'ERROR: Please select I\'m not a robot!', 'turnstile-for-cloudflare' ) );
+        }
+
+        $recaptcha = sanitize_text_field( $_POST['cf-turnstile-response'] );
+        if ( empty( $recaptcha ) || ! is_valid_captcha( $recaptcha ) ) {
+            wp_die( esc_html__( 'ERROR: Please select I\'m not a robot!', 'turnstile-for-cloudflare' ) );
+        }
+    } );
+} );
+
+// Adding Cloudflare Turnstile to WordPress Registration Form
+add_action( 'init', function () {
+    $enable = get_option( 'cloudflare_turnstile_enable', false );
+	$enableRegister = get_option( 'cloudflare_turnstile_register_enable', false );
+    if ( ! $enable || ! $enableRegister ) {
+        return;
+    }
+
+    // Enqueue the Turnstile script on the Registration page
+    add_action( 'login_enqueue_scripts', function () {
+        if ( 'register' === $GLOBALS['pagenow'] ) {
+            wp_enqueue_script( 'turnstile-for-cloudflare', 'https://challenges.cloudflare.com/turnstile/v0/api.js', [], CFTS_VERSION, true );
+        }
+    } );
+
+    // Add the Turnstile widget to the Registration form
+    add_action( 'register_form', function () {
+        echo '<div class="cf-turnstile" data-sitekey="' . esc_attr( cloudflare_key()[0] ) . '"></div>';
+    } );
+
+    // Verify the Turnstile response when the Registration form is submitted
+    add_filter( 'registration_errors', function ( $errors, $sanitized_user_login, $user_email ) {
+        if ( ! isset( $_POST['cf-turnstile-response'] ) ) {
+            $errors->add( 'captcha_error', __( '<strong>ERROR</strong>: Please select I\'m not a robot!', 'turnstile-for-cloudflare' ) );
+        } else {
+            $recaptcha = sanitize_text_field( $_POST['cf-turnstile-response'] );
+            if ( empty( $recaptcha ) || ! is_valid_captcha( $recaptcha ) ) {
+                $errors->add( 'captcha_error', __( '<strong>ERROR</strong>: Please select I\'m not a robot!', 'turnstile-for-cloudflare' ) );
+            }
+        }
+
+        return $errors;
+    }, 10, 3 );
 } );
 ?>
