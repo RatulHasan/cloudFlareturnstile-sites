@@ -38,15 +38,15 @@ class Utils {
         if ( is_wp_error( $response ) ) {
             $error_message = $response->get_error_message();
             echo 'Something went wrong: ' . esc_html( $error_message );
-        } else {
-            $result = wp_remote_retrieve_body( $response );
-            return json_decode( $result, true );
         }
+
+        $result = wp_remote_retrieve_body( $response );
+        return json_decode( $result, true );
     }
 
     public static function validateNonce($postName, $nonceName) {
         if ( ! isset( $_POST[$nonceName] ) || ! wp_verify_nonce( $_POST[$nonceName], $postName ) ) {
-            wp_die( 'Invalid nonce.');
+            wp_die( __( 'Are you cheating?', 'turnstile-for-cloudflare' ) );
         }
     }
 }
