@@ -36,7 +36,7 @@ class Frontend {
 
     public static function validateLoginCaptcha( $user, $password ) {
         if ( get_option( 'cloudflare_turnstile_enable', false ) && get_option( 'cloudflare_turnstile_login_enable', false ) ) {
-            Utils::validateNonce( 'cf_turnstile_form_nonces', 'cf_turnstile_form_action' );
+            Utils::validateNonce( 'cf_turnstile_form_nonce', 'cf_turnstile_form_action' );
             $captcha = isset( $_POST['cf-turnstile-response'] ) ? sanitize_text_field( $_POST['cf-turnstile-response'] ) : '';
             if ( ! Utils::isValidCaptcha( $captcha ) ) {
                 return new \WP_Error( 'captcha_error', __( 'Captcha Invalid', 'turnstile-for-cloudflare' ) );
