@@ -30,7 +30,7 @@ function cloudflare_key() {
 
 // Add settings link on plugin page
 function cloudflare_turnstile_settings_link( $links ) {
-    $settings_link = '<a href="options-general.php?page=cloudflare-turnstile">Settings</a>';
+    $settings_link = '<a href="options-general.php?page=cloudflare-turnstile">' . __( 'Settings', 'cloudflare-turnstile' ) . '</a>';
     array_unshift( $links, $settings_link );
 
     return $links;
@@ -55,10 +55,11 @@ add_action( 'admin_init', 'cloudflare_turnstile_register_settings' );
 function cloudflare_turnstile_page() {
     ?>
     <div class="wrap">
-        <h2>Cloudflare Turnstile</h2>
+        <h2>
+	        <?php esc_html_e( 'Cloudflare Turnstile', 'cloudflare-turnstile' ); ?>
+        </h2>
         <small>
-            Enter your Cloudflare Site Key and Secret Key to enable Cloudflare Turnstile.
-            Or create one from <a href="https://dash.cloudflare.com/sign-up?to=/:account/turnstile" target="_blank">Cloudflare</a>
+	        <?php echo sprintf( esc_html__( 'Enter your Cloudflare Site Key and Secret Key to enable Cloudflare Turnstile. Or create one from %s Cloudflare %s', 'cloudflare-turnstile' ), '<a href="https://dash.cloudflare.com/sign-up?to=/:account/turnstile" target="_blank">', '</a>' ); ?>
         </small>
         <form method="post" action="options.php">
             <?php
@@ -71,17 +72,17 @@ function cloudflare_turnstile_page() {
             ?>
             <table class="form-table form-table-wide">
                 <tr>
-                    <th scope="row"><label for="cloudflare_turnstile_enable">Enable Cloudflare Turnstile</label></th>
+                    <th scope="row"><label for="cloudflare_turnstile_enable"><?php esc_html_e( 'Enable Cloudflare Turnstile', 'cloudflare-turnstile' ); ?></label></th>
 	                <td>
 		                <input type="checkbox" id="cloudflare_turnstile_enable" name="cloudflare_turnstile_enable" value="1" <?php checked( 1, get_option( 'cloudflare_turnstile_enable' ), true ); ?>>
 	                </td>
                 </tr>
                 <tr>
-                    <th scope="row"><label for="cloudflare_site_key">Site Key</label></th>
+                    <th scope="row"><label for="cloudflare_site_key"><?php esc_html_e( 'Site Key', 'cloudflare-turnstile' ); ?></label></th>
                     <td><input type="text" id="cloudflare_site_key" name="cloudflare_site_key" value="<?php echo $sitekey; ?>" class="regular-text"></td>
                 </tr>
                 <tr>
-                    <th scope="row"><label for="cloudflare_secret_key">Secret Key</label></th>
+                    <th scope="row"><label for="cloudflare_secret_key"><?php esc_html_e( 'Secret Key', 'cloudflare-turnstile' ); ?></label></th>
                     <td><input type="text" id="cloudflare_secret_key" name="cloudflare_secret_key" value="<?php echo $secretkey; ?>" class="regular-text"></td>
                 </tr>
             </table>
@@ -135,13 +136,13 @@ add_action( 'wp_authenticate_user', function ( $user, $password ) {
     }
     $captcha = $_POST['cf-turnstile-response'];
     if ( ! $captcha ) {
-        return new WP_Error( 'Captcha Invalid', __( '<center>Captcha Invalid! Please check the captcha!</center>' ) );
+        return new WP_Error( 'Captcha Invalid', __( '<center>Captcha Invalid! Please check the captcha!</center>', 'cloudflare-turnstile' ) );
         die();
         exit;
     }
     $responseKeys = getResponse_keys( $captcha );
     if ( intval( $responseKeys['success'] ) !== 1 ) {
-        return new WP_Error( 'Captcha Invalid', __( '<center>Captcha Invalid! Please check the captcha!</center>' ) );
+        return new WP_Error( 'Captcha Invalid', __( '<center>Captcha Invalid! Please check the captcha!</center>', 'cloudflare-turnstile' ) );
         die();
         exit;
     } else {
@@ -208,9 +209,9 @@ add_action( 'init', function () {
         add_action( 'pre_comment_on_post', function () {
             $recaptcha = $_POST['cf-turnstile-response'];
             if ( empty( $recaptcha ) ) {
-                wp_die( __( "<b>ERROR:</b> please select <b>I'm not a robot!</b><p><a href='javascript:history.back()'>« Back</a></p>" ) );
+                wp_die( __( "<b>ERROR:</b> please select <b>I'm not a robot!</b><p><a href='javascript:history.back()'>« Back</a></p>", 'cloudflare-turnstile' ) );
             } elseif ( ! is_valid_captcha( $recaptcha ) ) {
-                wp_die( __( "<b>please select I'm not a robot!</b>" ) );
+                wp_die( __( "<b>please select I'm not a robot!</b>", 'cloudflare-turnstile' ) );
             }
         } );
 
