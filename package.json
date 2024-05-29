@@ -16,7 +16,7 @@
   "scripts": {
     "clean": "node bin/clean",
     "make-pot": "wp i18n make-pot . languages/turnstile-for-cloudflare.pot",
-    "zip": "npm run clean && npm run make-pot && node bin/copy && node bin/zip"
+    "zip": "composer install --no-scripts --no-dev && composer dumpautoload -o && npm run clean && npm run make-pot && node bin/copy && node bin/zip"
   },
   "devDependencies": {
     "archiver": "^5.3.1",
