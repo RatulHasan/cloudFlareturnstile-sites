@@ -17,8 +17,10 @@ Cloudflare Turnstile WordPress Plugin integrates Cloudflare's Turnstile captcha 
 
 = Features =
 * Adds Cloudflare Turnstile captcha to the WordPress login form.
+* Adds Cloudflare Turnstile captcha to the WordPress registration form.
+* Adds Cloudflare Turnstile captcha to the WordPress lost password form.
 * Adds Cloudflare Turnstile captcha to the WordPress comment form.
-* Options to enable or disable captcha on login and comment forms.
+* Options to enable or disable captcha on login form, registration form, lost password form, and comment form.
 * Easy to set up with your Cloudflare Site Key and Secret Key.
 
 == Installation ==
