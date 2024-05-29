@@ -46,7 +46,7 @@ class Utils {
 
     public static function validateNonce($postName, $nonceName) {
         if ( ! isset( $_POST[$nonceName] ) || ! wp_verify_nonce( $_POST[$nonceName], $postName ) ) {
-            die( 'Invalid nonce.' );
+            wp_die( 'Invalid nonce.');
         }
     }
 }
