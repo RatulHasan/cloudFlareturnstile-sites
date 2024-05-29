@@ -54,6 +54,13 @@ add_action( 'admin_init', function () {
 	}
 } );
 
+// Add language support
+function cloudflare_turnstile_load_textdomain() {
+	load_plugin_textdomain( 'turnstile-for-cloudflare', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
+
+add_action( 'init', 'cloudflare_turnstile_load_textdomain' );
+
 // Add menu in admin panel
 add_action( 'admin_menu', function () {
     add_options_page( 'Turnstile for Cloudflare', 'Turnstile for Cloudflare', 'manage_options', 'turnstile-for-cloudflare', 'cloudflare_turnstile_page' );
