@@ -7,11 +7,12 @@ class Frontend {
         add_action( 'login_enqueue_scripts', [ __CLASS__, 'enqueueLoginScripts' ] );
         add_action( 'login_form', [ __CLASS__, 'addLoginCaptcha' ] );
         add_action( 'wp_authenticate_user', [ __CLASS__, 'validateLoginCaptcha' ], 10, 2 );
+        add_filter( 'comment_form_defaults', [ __CLASS__, 'addCommentCaptcha' ] );
         add_action( 'pre_comment_on_post', [ __CLASS__, 'validateCommentCaptcha' ] );
-        add_action( 'lostpassword_form', [ __CLASS__, 'addLostPasswordCaptcha' ] );
-        add_action( 'lostpassword_post', [ __CLASS__, 'validateLostPasswordCaptcha' ] );
         add_action( 'register_form', [ __CLASS__, 'addRegisterCaptcha' ] );
         add_filter( 'registration_errors', [ __CLASS__, 'validateRegisterCaptcha' ], 10, 3 );
+        add_action( 'lostpassword_form', [ __CLASS__, 'addLostPasswordCaptcha' ] );
+        add_action( 'lostpassword_post', [ __CLASS__, 'validateLostPasswordCaptcha' ] );
     }
 
     public static function enqueueScripts() {
@@ -40,6 +41,13 @@ class Frontend {
             }
         }
         return $user;
+    }
+
+    public static function addCommentCaptcha( $defaults ) {
+        if ( get_option( 'cloudflare_turnstile_enable', false ) && get_option( 'cloudflare_turnstile_comment_enable', false ) ) {
+            $defaults['comment_field'] .= '<div class="cf-turnstile" data-sitekey="' . esc_attr( Utils::getKeys()[0] ) . '"></div>';
+        }
+        return $defaults;
     }
 
     public static function validateCommentCaptcha() {
