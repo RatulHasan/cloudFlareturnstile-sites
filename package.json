@@ -1,0 +1,25 @@
+{
+  "name": "turnstile-for-cloudflare",
+  "version": "1.0.0",
+  "description": "Cloudflare Turnstile WordPress Plugin integrates Cloudflare's Turnstile captcha service with your WordPress site. It helps protect your site from spam and abuse while allowing real users to pass through with ease.",
+  "homepage": "https://github.com/RatulHasan/turnstile-for-cloudflare",
+  "private": true,
+  "author": "Ratul Hasan",
+  "license": "GPL-3.0-or-later",
+  "keywords": [
+    "cloudflare",
+    "captcha",
+    "turnstile",
+    "comments spam protection",
+    "login spam protection"
+  ],
+  "scripts": {
+    "clean": "node bin/clean",
+    "make-pot": "wp i18n make-pot . languages/turnstile-for-cloudflare.pot",
+    "zip": "npm run clean && npm run make-pot && node bin/copy && node bin/zip"
+  },
+  "devDependencies": {
+    "archiver": "^5.3.1",
+    "@wordpress/i18n": "^4.34.0"
+  }
+}
