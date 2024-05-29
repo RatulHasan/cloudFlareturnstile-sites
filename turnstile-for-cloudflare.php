@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:         Turnstile for CloudFlare
- * Plugin URI:          https://github.com/RatulHasan/cloudFlare-Turnstile.git
+ * Plugin URI:          https://github.com/RatulHasan/turnstile-for-cloudflare
  * Description:         This plugin will help you to block your site from unwanted visitors.
  * Version:             1.0.0
  * Requires PHP:        7.4
