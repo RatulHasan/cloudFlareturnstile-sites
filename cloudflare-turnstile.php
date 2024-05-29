@@ -48,6 +48,8 @@ function cloudflare_turnstile_register_settings() {
 	register_setting( 'cloudflare_turnstile', 'cloudflare_turnstile_enable' );
     register_setting( 'cloudflare_turnstile', 'cloudflare_site_key' );
     register_setting( 'cloudflare_turnstile', 'cloudflare_secret_key' );
+	register_setting( 'cloudflare_turnstile', 'cloudflare_turnstile_login_enable' );
+	register_setting( 'cloudflare_turnstile', 'cloudflare_turnstile_comment_enable' );
 }
 
 add_action( 'admin_init', 'cloudflare_turnstile_register_settings' );
@@ -85,6 +87,14 @@ function cloudflare_turnstile_page() {
                     <th scope="row"><label for="cloudflare_secret_key"><?php esc_html_e( 'Secret Key', 'cloudflare-turnstile' ); ?></label></th>
                     <td><input type="text" id="cloudflare_secret_key" name="cloudflare_secret_key" value="<?php echo $secretkey; ?>" class="regular-text"></td>
                 </tr>
+                <tr>
+                    <th scope="row"><label for="cloudflare_turnstile_login_enable"><?php esc_html_e( 'Enable in Login Form', 'cloudflare-turnstile' ); ?></label></th>
+	                <td><input type="checkbox" id="cloudflare_turnstile_login_enable" name="cloudflare_turnstile_login_enable" value="1" <?php checked( 1, get_option( 'cloudflare_turnstile_login_enable' ), true ); ?>></td>
+                </tr>
+	            <tr>
+		            <th scope="row"><label for="cloudflare_turnstile_comment_enable"><?php esc_html_e( 'Enable in Comment Form', 'cloudflare-turnstile' ); ?></label></th>
+		            <td><input type="checkbox" id="cloudflare_turnstile_comment_enable" name="cloudflare_turnstile_comment_enable" value="1" <?php checked( 1, get_option( 'cloudflare_turnstile_comment_enable' ), true ); ?>></td>
+	            </tr>
             </table>
             <?php
             submit_button();
@@ -122,7 +132,8 @@ add_action( 'login_enqueue_scripts', 'login_style' );
 
 add_action( 'login_form', function () {
     $enable = get_option( 'cloudflare_turnstile_enable', false);
-    if ( ! $enable ) {
+	$enableLogin = get_option( 'cloudflare_turnstile_login_enable', false);
+    if ( ! $enable || ! $enableLogin ) {
         return;
     }
 
@@ -131,7 +142,8 @@ add_action( 'login_form', function () {
 
 add_action( 'wp_authenticate_user', function ( $user, $password ) {
     $enable = get_option( 'cloudflare_turnstile_enable', false);
-    if ( ! $enable ) {
+	$enableLogin = get_option( 'cloudflare_turnstile_login_enable', false);
+    if ( ! $enable || ! $enableLogin ) {
         return $user;
     }
     $captcha = $_POST['cf-turnstile-response'];
@@ -201,12 +213,17 @@ function getResponse_keys( $captcha ) {
 
 add_action( 'init', function () {
     $enable = get_option( 'cloudflare_turnstile_enable', false);
-    if ( ! $enable ) {
+	$enableComment = get_option( 'cloudflare_turnstile_comment_enable', false);
+    if ( ! $enable || ! $enableComment ) {
         return;
 	}
 
     if ( ! is_user_logged_in() ) {
         add_action( 'pre_comment_on_post', function () {
+			if ( ! isset( $_POST['cf-turnstile-response'] )){
+				wp_die( __( "<b>ERROR:</b> please select <b>I'm not a robot!</b><p><a href='javascript:history.back()'>« Back</a></p>", 'cloudflare-turnstile' ) );
+            }
+
             $recaptcha = $_POST['cf-turnstile-response'];
             if ( empty( $recaptcha ) ) {
                 wp_die( __( "<b>ERROR:</b> please select <b>I'm not a robot!</b><p><a href='javascript:history.back()'>« Back</a></p>", 'cloudflare-turnstile' ) );
