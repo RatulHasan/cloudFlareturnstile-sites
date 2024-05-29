@@ -26,7 +26,7 @@ Cloudflare Turnstile WordPress Plugin integrates Cloudflare's Turnstile captcha 
 == Installation ==
 
 1. Download the plugin and extract the files.
-2. Upload the `cloudflare-turnstile` directory to your `/wp-content/plugins/` directory.
+2. Upload the `turnstile-for-cloudflare` folder to the `/wp-content/plugins/` directory.
 3. Activate the plugin through the 'Plugins' menu in WordPress.
 4. Go to the settings page and enter your Cloudflare Site Key and Secret Key.
 
