@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-05-29T16:04:45+00:00\n"
+"POT-Creation-Date: 2024-05-29T16:19:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: turnstile-for-cloudflare\n"
@@ -38,59 +38,59 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: turnstile-for-cloudflare.php:77
+#: turnstile-for-cloudflare.php:84
 msgid "Turnstile for Cloudflare"
 msgstr ""
 
 #. translators: %1$s: Opening anchor tag, %2$s: Closing anchor tag
-#: turnstile-for-cloudflare.php:81
+#: turnstile-for-cloudflare.php:88
 msgid "Enter your Cloudflare Site Key and Secret Key to enable Turnstile for Cloudflare. Or create one from %1$sCloudflare%2$s."
 msgstr ""
 
-#: turnstile-for-cloudflare.php:97
+#: turnstile-for-cloudflare.php:104
 msgid "Enable Turnstile for Cloudflare"
 msgstr ""
 
-#: turnstile-for-cloudflare.php:107
+#: turnstile-for-cloudflare.php:114
 msgid "Site Key"
 msgstr ""
 
-#: turnstile-for-cloudflare.php:119
+#: turnstile-for-cloudflare.php:126
 msgid "Secret Key"
 msgstr ""
 
-#: turnstile-for-cloudflare.php:131
+#: turnstile-for-cloudflare.php:138
 msgid "Enable in Login Form"
 msgstr ""
 
-#: turnstile-for-cloudflare.php:141
+#: turnstile-for-cloudflare.php:148
 msgid "Enable in Comment Form"
 msgstr ""
 
 #. translators: %1$s: Opening center tag, %2$s: Closing center tag
-#: turnstile-for-cloudflare.php:198
-#: turnstile-for-cloudflare.php:203
+#: turnstile-for-cloudflare.php:205
+#: turnstile-for-cloudflare.php:210
 msgid "%1$sCaptcha Invalid! Please check the captcha!%2$s"
 msgstr ""
 
 #. translators: 1: Error message, 2: Back link
-#: turnstile-for-cloudflare.php:282
-#: turnstile-for-cloudflare.php:292
+#: turnstile-for-cloudflare.php:289
+#: turnstile-for-cloudflare.php:299
 msgid "<b>%1$s</b> please select I'm not a robot! <p><a href=\"javascript:history.back()\">« %2$s</a></p>"
 msgstr ""
 
-#: turnstile-for-cloudflare.php:283
-#: turnstile-for-cloudflare.php:293
+#: turnstile-for-cloudflare.php:290
 #: turnstile-for-cloudflare.php:300
+#: turnstile-for-cloudflare.php:307
 msgid "ERROR:"
 msgstr ""
 
-#: turnstile-for-cloudflare.php:284
-#: turnstile-for-cloudflare.php:294
+#: turnstile-for-cloudflare.php:291
+#: turnstile-for-cloudflare.php:301
 msgid "Back"
 msgstr ""
 
 #. translators: %s: Error message
-#: turnstile-for-cloudflare.php:299
+#: turnstile-for-cloudflare.php:306
 msgid "<b>%s</b> please select I'm not a robot!"
 msgstr ""
