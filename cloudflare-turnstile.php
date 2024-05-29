@@ -139,27 +139,7 @@ add_action( 'wp_authenticate_user', function ( $user, $password ) {
         die();
         exit;
     }
-    $secretKey = cloudflare_key()[1];
-    $ip        = $_SERVER['REMOTE_ADDR'];
-
-    $url_path = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
-    $data     = [ 'secret' => $secretKey, 'response' => $captcha, 'remoteip' => $ip ];
-
-    $options = [
-        'http' => [
-            'method'  => 'POST',
-            'content' => http_build_query( $data )
-        ]
-    ];
-
-    $stream = stream_context_create( $options );
-
-    $result = file_get_contents(
-        $url_path, false, $stream );
-
-    $response = $result;
-
-    $responseKeys = json_decode( $response, true );
+    $responseKeys = getResponse_keys( $captcha );
     if ( intval( $responseKeys['success'] ) !== 1 ) {
         return new WP_Error( 'Captcha Invalid', __( '<center>Captcha Invalid! Please check the captcha!</center>' ) );
         die();
@@ -178,6 +158,23 @@ function is_valid_captcha( $captcha ) {
     if ( ! $captcha ) {
         return false;
     }
+    $responseKeys = getResponse_keys( $captcha );
+    if ( intval( $responseKeys['success'] ) !== 1 ) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+/**
+ * getResponse_keys.
+ * @since PAY_CHECK_MATE_SINCE
+ *
+ * @param $captcha
+ *
+ * @return mixed
+ */
+function getResponse_keys( $captcha ) {
     $secretKey = cloudflare_key()[1];
     $ip        = $_SERVER['REMOTE_ADDR'];
 
@@ -198,12 +195,7 @@ function is_valid_captcha( $captcha ) {
 
     $response = $result;
 
-    $responseKeys = json_decode( $response, true );
-    if ( intval( $responseKeys['success'] ) !== 1 ) {
-        return false;
-    } else {
-        return true;
-    }
+    return json_decode( $response, true );
 }
 
 add_action( 'init', function () {
