@@ -1,7 +1,7 @@
-=== Cloudflare Turnstile ===
-Plugin Name: Cloudflare Turnstile
+=== Turnstile for CloudFlare ===
+Plugin Name: Turnstile for CloudFlare
 Contributors: ratulhasan
-Tags: cloudflare, captcha, turnstile, comments, login, spam protection
+Tags: cloudflare, captcha, turnstile, comments spam protection, login spam protection
 Version: 1.0.0
 Requires at least: 5.6
 Tested up to: 6.5
@@ -9,7 +9,7 @@ Stable tag: 1.0.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-This is a WordPress plugin that integrates Cloudflare's Turnstile captcha service into your WordPress site. It helps protect your site from spam and abuse while letting real people pass through with ease.
+Integrates Cloudflare's Turnstile captcha with WordPress to protect from spam while ensuring user ease.
 
 == Description ==
 
