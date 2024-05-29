@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-05-29T18:41:08+00:00\n"
+"POT-Creation-Date: 2024-05-29T18:55:25+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: turnstile-for-cloudflare\n"
@@ -34,10 +34,10 @@ msgstr ""
 msgid "https://ratuljh.wordpress.com/"
 msgstr ""
 
-#: includes/Frontend.php:44
-#: includes/Frontend.php:65
-#: includes/Frontend.php:84
-#: includes/Frontend.php:103
+#: includes/Frontend.php:42
+#: includes/Frontend.php:61
+#: includes/Frontend.php:78
+#: includes/Frontend.php:95
 msgid "Captcha Invalid"
 msgstr ""
 
@@ -80,4 +80,8 @@ msgstr ""
 
 #: includes/Settings.php:129
 msgid "Enable in Lost Password Form"
+msgstr ""
+
+#: includes/Utils.php:49
+msgid "Are you cheating?"
 msgstr ""

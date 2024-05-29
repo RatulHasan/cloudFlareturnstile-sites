@@ -44,8 +44,8 @@ class Utils {
         return json_decode( $result, true );
     }
 
-    public static function validateNonce($postName, $nonceName) {
-        if ( ! isset( $_POST[$nonceName] ) || ! wp_verify_nonce( $_POST[$nonceName], $postName ) ) {
+    public static function validateNonce($nonceName, $actionName) {
+        if ( ! isset( $_POST[$nonceName] ) || ! wp_verify_nonce( $_POST[$nonceName], $actionName ) ) {
             wp_die( __( 'Are you cheating?', 'turnstile-for-cloudflare' ) );
         }
     }
