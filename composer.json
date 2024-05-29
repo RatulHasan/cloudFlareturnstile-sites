@@ -1,0 +1,16 @@
+{
+  "name": "ratulhasan/turnstile-for-cloudflare",
+  "description": "Integrates Cloudflare's Turnstile captcha with WordPress to protect from spam while ensuring user ease.",
+  "license": "GPLv3 or later",
+  "authors": [
+    {
+      "name": "ratulhasan",
+      "email": "email@example.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+        "RatulHasan\\TurnstileForCloudflare\\": "includes/"
+    }
+  }
+}

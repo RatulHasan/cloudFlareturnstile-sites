@@ -3,7 +3,9 @@ const path = require('path')
 
 const packageJson = JSON.parse(fs.readFileSync('package.json'))
 const pluginFilesFoldersToCopy = [
+  '/includes',
   '/languages',
+  '/vendor',
   'LICENSE',
   'readme.txt',
   'changelog.txt',
