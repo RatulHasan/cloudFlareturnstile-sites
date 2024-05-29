@@ -43,4 +43,10 @@ class Utils {
             return json_decode( $result, true );
         }
     }
+
+    public static function validateNonce($postName, $nonceName) {
+        if ( ! isset( $_POST[$nonceName] ) || ! wp_verify_nonce( $_POST[$nonceName], $postName ) ) {
+            die( 'Invalid nonce.' );
+        }
+    }
 }

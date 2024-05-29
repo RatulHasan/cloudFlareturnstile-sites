@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-05-29T17:54:46+00:00\n"
+"POT-Creation-Date: 2024-05-29T18:41:08+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: turnstile-for-cloudflare\n"
@@ -34,10 +34,10 @@ msgstr ""
 msgid "https://ratuljh.wordpress.com/"
 msgstr ""
 
-#: includes/Frontend.php:40
-#: includes/Frontend.php:57
-#: includes/Frontend.php:72
-#: includes/Frontend.php:87
+#: includes/Frontend.php:44
+#: includes/Frontend.php:65
+#: includes/Frontend.php:84
+#: includes/Frontend.php:103
 msgid "Captcha Invalid"
 msgstr ""
 

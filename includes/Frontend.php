@@ -30,11 +30,13 @@ class Frontend {
     public static function addLoginCaptcha() {
         if ( get_option( 'cloudflare_turnstile_enable', false ) && get_option( 'cloudflare_turnstile_login_enable', false ) ) {
             echo '<div class="cf-turnstile" data-sitekey="' . esc_attr( Utils::getKeys()[0] ) . '"></div>';
+            wp_nonce_field( 'cf_turnstile_form_action', 'cf_turnstile_form_nonce' );
         }
     }
 
     public static function validateLoginCaptcha( $user, $password ) {
         if ( get_option( 'cloudflare_turnstile_enable', false ) && get_option( 'cloudflare_turnstile_login_enable', false ) ) {
+            Utils::validateNonce( 'cf_turnstile_form_nonce', 'cf_turnstile_form_action' );
             $captcha = isset( $_POST['cf-turnstile-response'] ) ? sanitize_text_field( $_POST['cf-turnstile-response'] ) : '';
             if ( ! Utils::isValidCaptcha( $captcha ) ) {
                 return new \WP_Error( 'captcha_error', __( 'Captcha Invalid', 'turnstile-for-cloudflare' ) );
@@ -46,12 +48,14 @@ class Frontend {
     public static function addCommentCaptcha( $defaults ) {
         if ( get_option( 'cloudflare_turnstile_enable', false ) && get_option( 'cloudflare_turnstile_comment_enable', false ) ) {
             $defaults['comment_field'] .= '<div class="cf-turnstile" data-sitekey="' . esc_attr( Utils::getKeys()[0] ) . '"></div>';
+            wp_nonce_field( 'cf_turnstile_form_action', 'cf_turnstile_form_nonce' );
         }
         return $defaults;
     }
 
     public static function validateCommentCaptcha() {
         if ( get_option( 'cloudflare_turnstile_enable', false ) && get_option( 'cloudflare_turnstile_comment_enable', false ) ) {
+            Utils::validateNonce( 'cf_turnstile_form_nonce', 'cf_turnstile_form_action' );
             $captcha = isset( $_POST['cf-turnstile-response'] ) ? sanitize_text_field( $_POST['cf-turnstile-response'] ) : '';
             if ( ! Utils::isValidCaptcha( $captcha ) ) {
                 wp_die( esc_html__( 'Captcha Invalid', 'turnstile-for-cloudflare' ) );
@@ -62,11 +66,13 @@ class Frontend {
     public static function addLostPasswordCaptcha() {
         if ( get_option( 'cloudflare_turnstile_enable', false ) && get_option( 'cloudflare_turnstile_lostpassword_enable', false ) ) {
             echo '<div class="cf-turnstile" data-sitekey="' . esc_attr( Utils::getKeys()[0] ) . '"></div>';
+            wp_nonce_field( 'cf_turnstile_form_action', 'cf_turnstile_form_nonce' );
         }
     }
 
     public static function validateLostPasswordCaptcha( $errors ) {
         if ( get_option( 'cloudflare_turnstile_enable', false ) && get_option( 'cloudflare_turnstile_lostpassword_enable', false ) ) {
+            Utils::validateNonce( 'cf_turnstile_form_nonce', 'cf_turnstile_form_action' );
             $captcha = isset( $_POST['cf-turnstile-response'] ) ? sanitize_text_field( $_POST['cf-turnstile-response'] ) : '';
             if ( ! Utils::isValidCaptcha( $captcha ) ) {
                 $errors->add( 'captcha_error', __( 'Captcha Invalid', 'turnstile-for-cloudflare' ) );
@@ -77,11 +83,13 @@ class Frontend {
     public static function addRegisterCaptcha() {
         if ( get_option( 'cloudflare_turnstile_enable', false ) && get_option( 'cloudflare_turnstile_register_enable', false ) ) {
             echo '<div class="cf-turnstile" data-sitekey="' . esc_attr( Utils::getKeys()[0] ) . '"></div>';
+            wp_nonce_field( 'cf_turnstile_form_action', 'cf_turnstile_form_nonce' );
         }
     }
 
     public static function validateRegisterCaptcha( $errors, $sanitized_user_login, $user_email ) {
         if ( get_option( 'cloudflare_turnstile_enable', false ) && get_option( 'cloudflare_turnstile_register_enable', false ) ) {
+            Utils::validateNonce( 'cf_turnstile_form_nonce', 'cf_turnstile_form_action' );
             $captcha = isset( $_POST['cf-turnstile-response'] ) ? sanitize_text_field( $_POST['cf-turnstile-response'] ) : '';
             if ( ! Utils::isValidCaptcha( $captcha ) ) {
                 $errors->add( 'captcha_error', __( 'Captcha Invalid', 'turnstile-for-cloudflare' ) );
