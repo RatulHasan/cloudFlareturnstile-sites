@@ -2,10 +2,13 @@
 namespace RatulHasan\TurnstileForCloudflare;
 
 class Utils {
-    public static function getKeys() {
+    public static function getKeys($key = null) {
+		if ($key) {
+			return get_option($key, '');
+		}
         return [
             get_option( 'cloudflare_site_key', '' ),
-            get_option( 'cloudflare_secret_key', '' )
+            get_option( 'cloudflare_secret_key', '' ),
         ];
     }
 

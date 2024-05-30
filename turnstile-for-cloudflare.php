@@ -34,6 +34,7 @@ function turnstile_for_cloudflare_init() {
     RatulHasan\TurnstileForCloudflare\Settings::init();
     RatulHasan\TurnstileForCloudflare\Admin::init();
     RatulHasan\TurnstileForCloudflare\Frontend::init();
+	RatulHasan\TurnstileForCloudflare\Integrations\WooCommerce::init();
 }
 
 function cloudflare_turnstile_redirect() {
@@ -59,3 +60,15 @@ function cloudflare_turnstile_load_textdomain() {
 add_action( 'init', 'cloudflare_turnstile_load_textdomain' );
 
 turnstile_for_cloudflare_init();
+
+
+if ( ! function_exists( 'write_log' ) ) {
+	function write_log ( $log )  {
+		if ( is_array( $log ) || is_object( $log ) ) {
+			error_log( print_r( $log, true ) );
+		} else {
+			error_log( $log );
+		}
+	}
+}
+
