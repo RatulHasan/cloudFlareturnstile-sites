@@ -7,22 +7,26 @@ use RatulHasan\TurnstileForCloudflare\Utils;
 class Checkout {
 
 	public static function init() {
+		add_action( 'wp_head', [ __CLASS__, 'enqueueScripts' ] );
+		add_action( 'woocommerce_review_order_after_payment', [ __CLASS__, 'addTurnstileToCheckout' ] );
+		add_action( 'woocommerce_review_order_before_payment', [ __CLASS__, 'addTurnstileToCheckout' ] );
+		add_action( 'woocommerce_before_checkout_billing_form', [ __CLASS__, 'addTurnstileToCheckout' ] );
+		add_action( 'woocommerce_after_checkout_billing_form', [ __CLASS__, 'addTurnstileToCheckout' ] );
 		add_action( 'woocommerce_review_order_before_submit', [ __CLASS__, 'addTurnstileToCheckout' ] );
+		add_action( 'cfw_after_cart_summary_totals', [ __CLASS__, 'addTurnstileToCheckout' ] );
 		add_action( 'woocommerce_checkout_process', [ __CLASS__, 'validateTurnstileCheckout' ] );
 	}
 
+	public static function enqueueScripts() {
+		if ( get_option( 'cloudflare_turnstile_enable', false ) ) {
+			wp_enqueue_script( 'turnstile-for-cloudflare', 'https://challenges.cloudflare.com/turnstile/v0/api.js', [], CFTS_VERSION, true );
+		}
+	}
+
 	public static function addTurnstileToCheckout() {
-		echo '<pre>';
-		print_r( 'ok' );
-		exit();
 		echo '<h3>' . __( 'Please complete the captcha to proceed', 'turnstile-for-checkout' ) . '</h3>';
 		echo '<div class="cf-turnstile" data-sitekey="' . esc_attr( self::get_site_key() ) . '"></div>';
 		wp_nonce_field( 'cf_turnstile_form_action', 'cf_turnstile_form_nonce' );
-		wp_enqueue_script( 'turnstile-for-checkout', 'https://challenges.cloudflare.com/turnstile/v0/api.js', [], '1.0.0', true );
-
-		// Debugging statement
-		error_log( 'Turnstile added to checkout.' );
-		echo '<script>console.log("Turnstile added to checkout.");</script>';
 	}
 
 	public static function validateTurnstileCheckout() {
