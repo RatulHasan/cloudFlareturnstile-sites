@@ -31,10 +31,13 @@ define( 'CFTS_FILE', plugin_basename( __FILE__ ) );
 
 // Initialize the plugin.
 function turnstile_for_cloudflare_init() {
-    RatulHasan\TurnstileForCloudflare\Settings::init();
-    RatulHasan\TurnstileForCloudflare\Admin::init();
+	if ( is_admin() ) {
+		RatulHasan\TurnstileForCloudflare\Settings::init();
+		RatulHasan\TurnstileForCloudflare\Admin::init();
+	}
+
     RatulHasan\TurnstileForCloudflare\Frontend::init();
-	RatulHasan\TurnstileForCloudflare\Integrations\WooCommerce::init();
+	RatulHasan\TurnstileForCloudflare\Integrations\WooCommerce\WooCommerce::init();
 }
 
 function cloudflare_turnstile_redirect() {

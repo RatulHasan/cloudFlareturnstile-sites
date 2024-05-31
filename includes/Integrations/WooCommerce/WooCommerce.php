@@ -1,8 +1,6 @@
 <?php
 
-namespace RatulHasan\TurnstileForCloudflare\Integrations;
-
-use RatulHasan\TurnstileForCloudflare\Integrations\WooCommerce\Checkout;
+namespace RatulHasan\TurnstileForCloudflare\Integrations\WooCommerce;
 
 class WooCommerce {
 
@@ -12,6 +10,7 @@ class WooCommerce {
 
 	public static function woocommerceLoaded() {
 		Checkout::init();
+		PayOrder::init();
 	}
 
 }
